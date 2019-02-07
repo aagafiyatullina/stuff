@@ -10,55 +10,55 @@
 
 using namespace std;
 
-class Coordinates {
+class Coordinates {           //класс для работы с точками на координатной плоскости
  private:
      string CoordinateSystem, PointName;
      double x, y;
- public:
+ public:                      //инциализация: имя, вид координатной системы (полярная или декартова), и 2 координаты
      Coordinates(string PointName, string CoordinateSystem, double first, string second): PointName(PointName),
                                                                                CoordinateSystem(CoordinateSystem) {
-         if (CoordinateSystem == "Polar") {
+         if (CoordinateSystem == "Polar") {   //если система полярная, то координаты имеют вид r = a, phi = pi/b
              string strAngle = second.substr(3);
              int angleCoef = stoi(strAngle);
              double radianAngle = PI / angleCoef;
              x = first * cos(radianAngle);
              y = first * sin(radianAngle);
-         } else {
+         } else {                             //если система декартова, то координаты имеют вид x = a, y = b
              x = first;
              y = stoi(second);
          }
 
      }
 
-     string name() {
+     string name() {                         //возвращает имя точки
          return PointName;
      }
 
-     pair<double, double> get_coordinates() {
+     pair<double, double> get_coordinates() {//возвращает координаты точки в декартовой системе
          auto coord = make_pair(x, y);
          return coord;
      }
 };
 
-double dist(shared_ptr<Coordinates> p1, shared_ptr<Coordinates> p2) {
+double dist(shared_ptr<Coordinates> p1, shared_ptr<Coordinates> p2) { //расстояние между точками
     auto pair1 = p1->get_coordinates();
     auto pair2 = p2->get_coordinates();
     return(sqrt(pow(pair1.second - pair2.second, 2) + pow(pair1.first - pair2.second, 2)));
 }
 
-class PointDistances {
+class PointDistances {                //класс для хранения точек
  private:
      vector<shared_ptr<Coordinates>> points;
  public:
      PointDistances(): points() {
      }
 
-     void addPoint(Coordinates point) {
+     void addPoint(Coordinates point) { //добавление точки в вектор
          auto pointer = make_shared<Coordinates>(point);
          points.push_back(pointer);
      }
 
-     pair<shared_ptr<Coordinates>, shared_ptr<Coordinates>> closest_points() {
+     pair<shared_ptr<Coordinates>, shared_ptr<Coordinates>> closest_points() { //поиск двух ближайших друг к другу точек в массиве
          double mindist = 99999;
          int point1, point2;
          for (int i = 0; i < points.size(); ++i) {
@@ -78,26 +78,6 @@ class PointDistances {
 
 };
 
-void printCoords(pair<double, double> x) {
-    cout << x.first << ' ' << x.second << '\n';
-}
-
 int main() {
-    PointDistances vec = PointDistances();
-    Coordinates p1("A", "Polar", 8, "pi/6");
-    Coordinates p2("B", "Polar", 10, "pi/3");
-    Coordinates p3("C", "Cartesian", 2, "8");
-    Coordinates p4("D", "Cartesian", 4, "10");
-    vec.addPoint(p1);
-    vec.addPoint(p2);
-    vec.addPoint(p3);
-    vec.addPoint(p4);
-    auto closestPoints = vec.closest_points();
-    auto coords1 = closestPoints.first->get_coordinates();
-    auto coords2 = closestPoints.second->get_coordinates();
-    cout << closestPoints.first->name() << ' ';
-    printCoords(coords1);
-    cout << closestPoints.second->name() << ' ';
-    printCoords(coords2);
     return 0;
 }
